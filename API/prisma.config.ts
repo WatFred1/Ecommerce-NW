@@ -11,6 +11,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    url: env("postgresql://postgres:1234@localhost:5432/econmerce?schema=public"),
   },
 });
