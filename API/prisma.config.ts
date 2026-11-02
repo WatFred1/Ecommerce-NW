@@ -9,8 +9,7 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
   },
-  engine: "classic",
   datasource: {
-    url: env("postgresql://postgres:1234@localhost:5432/econmerce?schema=public"),
+    url: env("DATABASE_URL"),
   },
 });
