@@ -3,10 +3,7 @@ import { ZodError } from "zod";
 
 import { logger } from "../lib/logger.js";
 
-/**
- * Error con código HTTP explícito, pensado para lanzarse desde
- * controladores y servicios y ser formateado por `errorHandler`.
- */
+
 export class HttpError extends Error {
   constructor(
     public readonly status: number,
