@@ -3,7 +3,11 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import pinoHttp from "pino-http";
-
+import { corsOptions } from "./config/cors.js";
+import { apiRateLimiter } from "./middlewares/rateLimiter.js";
+import { requestlogger } from "./middlewares/requestLogger.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { env } from "./config/index.js";
 import { logger } from "./lib/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -14,14 +18,25 @@ const app = express();
 app.disable("x-powered-by");
 
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(requestlogger);
+app.use(apiRateLimiter)
 app.use(express.json({ limit: "1mb" }));
-app.use(
-  pinoHttp({
-    logger,
-    autoLogging: env.NODE_ENV !== "test",
-  })
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "webstore-api",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.set("trust proxy",
+  env.TRUST_PROXY === "true" ? true : false
+
 );
+
+app.get("/debug/ip")
 
 if (env.NODE_ENV !== "test") {
   app.use(
