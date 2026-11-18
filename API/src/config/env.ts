@@ -1,4 +1,5 @@
 import "dotenv/config";
+import rateLimit from "express-rate-limit";
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -30,7 +31,20 @@ const envSchema = z.object({
 
   CORS_ORIGINS: z
     .string()
-    .default("http://localhost:5173")
+    .default("http://localhost:5173"),
+
+    RATE_LIMIT_WINDOW_MS: z.coerce.number<number>()
+    .int()
+    .positive()
+    .default(900000),
+
+  RATE_LIMIT_MAX_REQUESTS: z.coerce.number<number>()
+    .int()
+    .positive()
+    .default(100),
+
+  TRUST_PROXY: z.enum (["none","looback"])
+  .default("none")
 });
 
 const result = envSchema.safeParse(process.env);

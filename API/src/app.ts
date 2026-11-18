@@ -1,12 +1,11 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
 import pinoHttp from "pino-http";
 import { corsOptions } from "./config/cors.js";
-import { apiRateLimiter } from "./middlewares/rateLimiter.js";
-import { requestlogger } from "./middlewares/requestLogger.js";
+import { requestlogger } from "./middlewares/requestLoggr.js";
 import authRoutes from "./routes/auth.routes.js";
+import { apiRateLimiter } from "./middlewares/rateLimiter.js";
 import userRoutes from "./routes/user.routes.js";
 import { env } from "./config/index.js";
 import { logger } from "./lib/logger.js";
@@ -32,22 +31,13 @@ app.get("/health", (_req, res) => {
 });
 
 app.set("trust proxy",
-  env.TRUST_PROXY === "true" ? true : false
-
+  env.TRUST_PROXY === "looback" ? 1 : 0
 );
 
 app.get("/debug/ip")
 
 if (env.NODE_ENV !== "test") {
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      limit: 300,
-      standardHeaders: "draft-8",
-      legacyHeaders: false,
-      message: { error: "Demasiadas solicitudes, intenta más tarde" },
-    })
-  );
+  app.use(apiRateLimiter);
 }
 
 app.get("/", (_req, res) => {
