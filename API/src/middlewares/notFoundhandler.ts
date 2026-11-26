@@ -8,9 +8,10 @@ export const notFoundHandler: RequestHandler = (req,
   ) => {
     next(
       new AppError(
-        'Ruta no encontrada',`${req.method} ${req.path}`, 
+        "Ruta no encontrada",
         404,
-        "ROUTE_NOT_FOUND"
+        "ROUTE_NOT_FOUND",
+        { method: req.method, path: req.path }
       )
     );
   };

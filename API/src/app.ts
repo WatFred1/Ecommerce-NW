@@ -31,10 +31,8 @@ app.get("/health", (_req, res) => {
 });
 
 app.set("trust proxy",
-  env.TRUST_PROXY === "looback" ? 1 : 0
+  env.TRUST_PROXY === "loopback" ? 1 : 0
 );
-
-app.get("/debug/ip")
 
 if (env.NODE_ENV !== "test") {
   app.use(apiRateLimiter);

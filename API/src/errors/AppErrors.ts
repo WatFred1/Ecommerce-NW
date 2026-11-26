@@ -6,7 +6,7 @@ export class AppError extends Error{
 
     constructor(
         message: string,
-        statusCode: 500,
+        statusCode: number = 500,
         code = "INTERNAL_SERVER_ERROR",
         details?: unknown
     ){

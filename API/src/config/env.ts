@@ -33,7 +33,7 @@ const envSchema = z.object({
     .string()
     .default("http://localhost:5173"),
 
-    RATE_LIMIT_WINDOW_MS: z.coerce.number<number>()
+  RATE_LIMIT_WINDOW_MS: z.coerce.number<number>()
     .int()
     .positive()
     .default(900000),
@@ -43,8 +43,8 @@ const envSchema = z.object({
     .positive()
     .default(100),
 
-  TRUST_PROXY: z.enum (["none","looback"])
-  .default("none")
+  TRUST_PROXY: z.enum(["none", "loopback", "looback"])
+    .default("none")
 });
 
 const result = envSchema.safeParse(process.env);
@@ -61,6 +61,16 @@ if (!result.success) {
   throw new Error("No se pudo validar la configuración");
 }
 
-export const env = Object.freeze(result.data);
+export const env = Object.freeze({
+  ...result.data,
+  RATE_LIMIT_MAX_REQUESTS:
+    result.data.RATE_LIMIT_MAX_REQUESTS ??
+    result.data.RATE_LIMIT_MAX ??
+    100,
+  TRUST_PROXY:
+    result.data.TRUST_PROXY === "looback"
+      ? "loopback"
+      : result.data.TRUST_PROXY,
+});
 
 export type Env = typeof env;
