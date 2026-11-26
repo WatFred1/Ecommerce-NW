@@ -1,8 +1,8 @@
 import type {Response} from 'express';
 
-export funcion successResponse<t>(
+export function successResponse<T>(
     res: Response,
-    data: t,
+    data: T,
     statusCode = 200,
     message = "Operacion exitosa"
 ): Response {
